@@ -45,6 +45,8 @@ void APlayerCharacter::BeginPlay()
     OnHealthChanged(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
+
+    LandedDelegate.AddDynamic(this, &APlayerCharacter::OnGroundLanded);
 }
 
 // Called every frame
@@ -122,4 +124,15 @@ void APlayerCharacter::OnDeath()
 void APlayerCharacter::OnHealthChanged(float NewHealth)
 {
     HealthTextRender->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), NewHealth)));
+}
+
+
+void APlayerCharacter::OnGroundLanded(const FHitResult& Hit) 
+{
+    const auto VelocityZ = -GetCharacterMovement()->Velocity.Z;
+
+    if (VelocityZ < LandedDamageVelocity.X) return;
+
+    const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, VelocityZ);
+    TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }

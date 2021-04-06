@@ -33,7 +33,7 @@ public:
     UPROPERTY(EditAnywhere, Category = "Auto Heal", meta = (EditCondition = "EnableAutoHeal"))
     float AutoHealUpdateRate = 0.5f;
 
-    UPROPERTY(EditAnywhere, Category = "Auto Heal", meta = (EditCondition = "EnableAutoHeal")
+    UPROPERTY(EditAnywhere, Category = "Auto Heal", meta = (EditCondition = "EnableAutoHeal"))
     float HealthPerRate = 5.f;
 
     float GetHealth() const { return Health; }
