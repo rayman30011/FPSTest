@@ -9,6 +9,7 @@
 #include <Components/TextRenderComponent.h>
 #include "..\..\Public\Player\PlayerCharacter.h"
 #include <GameFramework\Controller.h>
+#include "Weapon/BaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(CharacterLog, All, All);
 
@@ -47,6 +48,8 @@ void APlayerCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &APlayerCharacter::OnGroundLanded);
+
+    SpawnWeapon();
 }
 
 // Called every frame
@@ -135,4 +138,16 @@ void APlayerCharacter::OnGroundLanded(const FHitResult& Hit)
 
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, VelocityZ);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+}
+
+void APlayerCharacter::SpawnWeapon()
+{
+    if (!GetWorld()) return;
+
+    const auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+    if (Weapon)
+    {
+        FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, false);
+        Weapon->AttachToComponent(GetMesh(), Rules, "WeaponSocket");
+    }
 }
