@@ -10,7 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UHealthComponent;
 class UTextRenderComponent;
-class ABaseWeapon;
+class UWeaponComponent;
 
 UCLASS()
 class TESTFPS_API APlayerCharacter : public ACharacter
@@ -37,6 +37,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* HealthTextRender;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UWeaponComponent* WeaponComponent;
+
     UPROPERTY(EditDefaultsOnly, Category = "Animations")
     UAnimMontage* DeathAnimation;
 
@@ -45,9 +48,6 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Movement")
     FVector2D LandedDamage = FVector2D(10.f, 100.f);
-
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<ABaseWeapon> WeaponClass;
 
 public:
     // Called every frame

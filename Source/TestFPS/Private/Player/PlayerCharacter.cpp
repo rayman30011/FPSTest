@@ -7,9 +7,9 @@
 #include <Components/CustomCharacterMovementComponent.h>
 #include <Components/HealthComponent.h>
 #include <Components/TextRenderComponent.h>
-#include "..\..\Public\Player\PlayerCharacter.h"
+#include "Player\PlayerCharacter.h"
+#include "Components/WeaponComponent.h"
 #include <GameFramework\Controller.h>
-#include "Weapon/BaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(CharacterLog, All, All);
 
@@ -30,6 +30,8 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjInit)
     UCharacterMovementComponent* Movement = GetCharacterMovement();
 
     HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+    WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
+
     HealthTextRender = CreateDefaultSubobject<UTextRenderComponent>("HealthTextRender");
     HealthTextRender->SetupAttachment(GetRootComponent());
 }
@@ -42,14 +44,13 @@ void APlayerCharacter::BeginPlay()
     check(HealthComponent);
     check(GetCharacterMovement());
     check(HealthTextRender);
+    check(WeaponComponent);
 
     OnHealthChanged(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &APlayerCharacter::OnGroundLanded);
-
-    SpawnWeapon();
 }
 
 // Called every frame
@@ -70,6 +71,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
     PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::Sprint);
     PlayerInputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::Unsprint);
+    PlayerInputComponent->BindAction("Attack", IE_Pressed, WeaponComponent, &UWeaponComponent::Fire);
 }
 
 bool APlayerCharacter::IsRunning() const
@@ -138,16 +140,4 @@ void APlayerCharacter::OnGroundLanded(const FHitResult& Hit)
 
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, VelocityZ);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
-}
-
-void APlayerCharacter::SpawnWeapon()
-{
-    if (!GetWorld()) return;
-
-    const auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
-    if (Weapon)
-    {
-        FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, false);
-        Weapon->AttachToComponent(GetMesh(), Rules, "WeaponSocket");
-    }
 }
