@@ -7,6 +7,7 @@
 #include "BaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
+class APlayerController;
 
 UCLASS()
 class TESTFPS_API ABaseWeapon : public AActor
@@ -22,8 +23,17 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent* WeaponMesh;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    FName MuzzleSocketName = "MuzzleFlash";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float TranceLenth = 1500;
+
 	virtual void BeginPlay() override;
 
-public:	
+	void MakeShoot();
 
+private:	
+	APlayerController* GetPlayerController() const;
+    bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
 };

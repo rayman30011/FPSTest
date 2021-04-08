@@ -28,6 +28,7 @@ void UWeaponComponent::SpawnWeapon()
 
     FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, false);
     CurrentWeapon->AttachToComponent(Character->GetMesh(), Rules, SocketName);
+    CurrentWeapon->SetOwner(GetOwner());
 }
 
 void UWeaponComponent::Fire() {
