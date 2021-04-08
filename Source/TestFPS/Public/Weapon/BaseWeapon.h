@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float TranceLenth = 1500;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    float Damage = 20;
+
 	virtual void BeginPlay() override;
 
 	void MakeShoot();

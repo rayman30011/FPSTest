@@ -51,6 +51,12 @@ void ABaseWeapon::MakeShoot()
         DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 24, FColor::Red, false, 3.f);
         DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), HitResult.ImpactPoint, FColor::Red, false, 1.f, 0, 3.f);
 
+        const auto DamagedActor = HitResult.Actor;
+        if (DamagedActor.IsValid())
+        {
+            HitResult.Actor->TakeDamage(Damage, FDamageEvent{}, GetPlayerController(), this);
+        }
+
         UE_LOG(WeaponLog, Display, TEXT("Bone %s"), *HitResult.BoneName.ToString());
     }
     else
@@ -71,9 +77,7 @@ bool ABaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotati
 {
     const auto Controller = GetPlayerController();
     if (!Controller) return false;
-
-    FVector ViewLocation;
-    FRotator ViewRotation;
+    
     Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
     return true;
 }

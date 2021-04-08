@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Player/PlayerCharacter.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include <Components/CustomCharacterMovementComponent.h>
 #include <Components/HealthComponent.h>
 #include <Components/TextRenderComponent.h>
-#include "Player\PlayerCharacter.h"
+#include <GameFramework/Controller.h>
+#include "Camera/CameraComponent.h"
 #include "Components/WeaponComponent.h"
-#include <GameFramework\Controller.h>
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/CapsuleComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(CharacterLog, All, All);
 
@@ -124,6 +124,9 @@ void APlayerCharacter::OnDeath()
     {
         Controller->ChangeState(NAME_Spectating);
     }
+    
+    const auto Capsule = GetCapsuleComponent();
+    Capsule->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void APlayerCharacter::OnHealthChanged(float NewHealth)
