@@ -17,7 +17,8 @@ class TESTFPS_API ABaseWeapon : public AActor
 public:	
 	ABaseWeapon();
 
-	virtual void Fire();
+	virtual void StartFire();
+	virtual void StopFire();
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -33,10 +34,10 @@ protected:
     float Damage = 20;
 
 	virtual void BeginPlay() override;
-
-	void MakeShoot();
-
-private:	
-	APlayerController* GetPlayerController() const;
+	virtual void MakeShoot();
+    virtual bool GetTraceData(FVector &Start, FVector &End) const;
+    
+    APlayerController* GetPlayerController() const;
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
+    FVector GetMuzzleLocation() const; 
 };
