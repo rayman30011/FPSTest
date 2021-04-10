@@ -43,10 +43,15 @@ private:
     UPROPERTY()
     TArray<ABaseWeapon*> AvailableWeapons;
 
+    int32 CurrentWeaponIndex = 0;
+    bool EquipAnimInProgress = false;
+
     void EquipWeapon(int32 Index);
     void SpawnWeapons();
     void AttachWeaponToSocket(ABaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName);
     void PlayAnimMontage(UAnimMontage* Animation);
-
-    int32 CurrentWeaponIndex = 0;
+    void InitAnimations();
+    void OnEquipFinished(USkeletalMeshComponent* MeshComp);
+    bool CanFire() const;
+    bool CanEquip() const;
 };

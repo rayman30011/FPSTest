@@ -2,7 +2,10 @@
 
 #include "Components/WeaponComponent.h"
 #include "Weapon/BaseWeapon.h"
-#include <GameFramework/Character.h>
+#include "GameFramework/Character.h"
+#include "Animations/EquipRifleAnimNotify.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
 UWeaponComponent::UWeaponComponent()
 {
@@ -14,6 +17,7 @@ void UWeaponComponent::BeginPlay()
     Super::BeginPlay();
 
     CurrentWeaponIndex = 0;
+    InitAnimations();
     SpawnWeapons();
     EquipWeapon(CurrentWeaponIndex);
 }
@@ -44,6 +48,7 @@ void UWeaponComponent::EquipWeapon(int32 Index)
 
     CurrentWeapon = AvailableWeapons[Index];
     AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), EquipSocketName);
+    EquipAnimInProgress = true;
     PlayAnimMontage(EquipAnimMontage);
 }
 
@@ -74,7 +79,7 @@ void UWeaponComponent::AttachWeaponToSocket(ABaseWeapon* Weapon, USceneComponent
 
 void UWeaponComponent::StartFire()
 {
-    if (!CurrentWeapon) return;
+    if (!CanFire()) return;
     CurrentWeapon->StartFire();
 }
 
@@ -86,6 +91,8 @@ void UWeaponComponent::StopFire()
 
 void UWeaponComponent::NextWeapon()
 {
+    if (!CanEquip()) return;
+    
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % AvailableWeapons.Num();
     EquipWeapon(CurrentWeaponIndex);
 }
@@ -96,4 +103,37 @@ void UWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
     if (!Character || !GetWorld()) return;
 
     Character->PlayAnimMontage(Animation);
+}
+
+void UWeaponComponent::InitAnimations()
+{
+    if (!EquipAnimMontage) return;
+    
+    const auto NotifyEvents = EquipAnimMontage->Notifies;
+    for (auto NotifyEvent : NotifyEvents)
+    {
+        auto EquipFinishNotify = Cast<UEquipRifleAnimNotify>(NotifyEvent.Notify);
+        if (!EquipFinishNotify) continue;
+
+        EquipFinishNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
+        break;
+    }
+}
+
+void UWeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComp)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character || Character->GetMesh() != MeshComp) return;
+
+    EquipAnimInProgress = false;
+}
+
+bool UWeaponComponent::CanFire() const
+{
+    return CurrentWeapon && !EquipAnimInProgress;
+}
+
+bool UWeaponComponent::CanEquip() const
+{
+    return !EquipAnimInProgress;
 }

@@ -6,12 +6,15 @@
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "EquipRifleAnimNotify.generated.h"
 
-/**
- * 
- */
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnNotifiedSignature, USkeletalMeshComponent* MeshComp);
+
 UCLASS()
 class TESTFPS_API UEquipRifleAnimNotify : public UAnimNotify
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+public:
+    virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
+    FOnNotifiedSignature OnNotified;
 };
