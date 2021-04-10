@@ -1,13 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Weapon/BaseWeapon.h"
-#include <Components/SkeletalMeshComponent.h>
-#include <Engine/World.h>
-#include <DrawDebugHelpers.h>
-#include <GameFramework/Character.h>
-#include <GameFramework/Controller.h>
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/Character.h"
 
-DEFINE_LOG_CATEGORY_STATIC(WeaponLog, All, All);
+DEFINE_LOG_CATEGORY_STATIC(LogWeapon, All, All);
 
 ABaseWeapon::ABaseWeapon()
 {
@@ -20,6 +17,9 @@ ABaseWeapon::ABaseWeapon()
 void ABaseWeapon::BeginPlay()
 {
     Super::BeginPlay();
+    
+    check(WeaponMesh);
+    CurrentAmmo = DefaultAmmo;
 }
 
 void ABaseWeapon::StartFire()
@@ -67,4 +67,39 @@ bool ABaseWeapon::GetTraceData(FVector& Start, FVector& End) const
 FVector ABaseWeapon::GetMuzzleLocation() const
 {
     return WeaponMesh->GetSocketTransform(MuzzleSocketName).GetLocation();
+}
+
+void ABaseWeapon::DecreaseAmmo()
+{
+    CurrentAmmo.Bullets--;
+    LogAmmo();
+    if (IsClipEmpty() && !IsEmptyAmmo())
+    {
+        ChangeClip();
+    }
+}
+
+bool ABaseWeapon::IsEmptyAmmo() const
+{
+    return !CurrentAmmo.Infinite && CurrentAmmo.Clips <= 0 && IsClipEmpty();
+}
+
+bool ABaseWeapon::IsClipEmpty() const
+{
+    return CurrentAmmo.Bullets <= 0;
+}
+
+void ABaseWeapon::ChangeClip()
+{
+    UE_LOG(LogWeapon, Display, TEXT("---- Change Clip ----"));
+    
+    CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+    CurrentAmmo.Clips--;
+}
+
+void ABaseWeapon::LogAmmo()
+{
+    FString LogMessage = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + "/";
+    LogMessage += CurrentAmmo.Infinite ? "Inf" : FString::FromInt(CurrentAmmo.Clips);
+    UE_LOG(LogWeapon, Display, TEXT("%s"), *LogMessage);
 }

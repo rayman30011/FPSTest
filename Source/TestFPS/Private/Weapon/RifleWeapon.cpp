@@ -19,10 +19,18 @@ void ARifleWeapon::StopFire()
 
 void ARifleWeapon::MakeShoot()
 {
-    if (!GetWorld()) return;
+    if (!GetWorld() || IsEmptyAmmo())
+    {
+        StopFire();
+        return;
+    }
 
     FVector TraceStart, TraceEnd;
-    if (!GetTraceData(TraceStart, TraceEnd)) return;
+    if (!GetTraceData(TraceStart, TraceEnd))
+    {
+        StopFire();
+        return;
+    }
 
     FCollisionQueryParams Params;
     Params.AddIgnoredActor(GetOwner());
@@ -44,6 +52,8 @@ void ARifleWeapon::MakeShoot()
     {
         DrawDebugLine(GetWorld(), GetMuzzleLocation() , TraceEnd, FColor::Red, false, 1.f, 0, 3.f);
     }
+
+    DecreaseAmmo();
 }
 
 bool ARifleWeapon::GetTraceData(FVector& Start, FVector& End) const

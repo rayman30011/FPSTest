@@ -8,6 +8,18 @@
 
 class ABaseWeapon;
 
+USTRUCT()
+struct FWeaponData
+{
+    GENERATED_BODY()
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<ABaseWeapon> WeaponClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UAnimMontage* ReloadAnimMontage;
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TESTFPS_API UWeaponComponent : public UActorComponent
 {
@@ -19,11 +31,15 @@ public:
     void StartFire();
     void StopFire();
     void NextWeapon();
+    void Reload();
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TArray<TSubclassOf<ABaseWeapon>> WeaponClasses;
+    TArray<FWeaponData> WeaponData;
 
+    UPROPERTY()
+    UAnimMontage* CurrentReloadAnimMontage = nullptr;
+    
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName EquipSocketName;
 

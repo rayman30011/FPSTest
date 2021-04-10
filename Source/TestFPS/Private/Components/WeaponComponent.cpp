@@ -37,6 +37,12 @@ void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UWeaponComponent::EquipWeapon(int32 Index)
 {
+    if (Index < 0 || Index >= WeaponData.Num())
+    {
+        UE_LOG(LogWeaponComponent, Warning, TEXT("Invalid wepon index"))
+        return;
+    }
+
     ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (!Character) return;
 
@@ -47,6 +53,13 @@ void UWeaponComponent::EquipWeapon(int32 Index)
     }
 
     CurrentWeapon = AvailableWeapons[Index];
+    const auto CurrentWeaponData = WeaponData.FindByPredicate([&](const FWeaponData& Data)
+    {
+        return Data.WeaponClass == CurrentWeapon->GetClass();
+    });
+
+    CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
+    
     AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), EquipSocketName);
     EquipAnimInProgress = true;
     PlayAnimMontage(EquipAnimMontage);
@@ -57,9 +70,9 @@ void UWeaponComponent::SpawnWeapons()
     ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (!Character || !GetWorld()) return;
 
-    for (auto WeaponClass : WeaponClasses)
+    for (auto Data : WeaponData)
     {
-        auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+        auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(Data.WeaponClass);
         if (!Weapon) continue;
 
         Weapon->SetOwner(GetOwner());
@@ -92,9 +105,15 @@ void UWeaponComponent::StopFire()
 void UWeaponComponent::NextWeapon()
 {
     if (!CanEquip()) return;
-    
+
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % AvailableWeapons.Num();
     EquipWeapon(CurrentWeaponIndex);
+}
+
+void UWeaponComponent::Reload()
+{
+    UE_LOG(LogWeaponComponent, Display, TEXT("RELOAD"));
+    PlayAnimMontage(CurrentReloadAnimMontage);
 }
 
 void UWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
@@ -108,7 +127,7 @@ void UWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 void UWeaponComponent::InitAnimations()
 {
     if (!EquipAnimMontage) return;
-    
+
     const auto NotifyEvents = EquipAnimMontage->Notifies;
     for (auto NotifyEvent : NotifyEvents)
     {
