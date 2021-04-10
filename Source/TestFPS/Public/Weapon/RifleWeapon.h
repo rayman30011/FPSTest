@@ -18,7 +18,7 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     float TimeBetweenShot = 0.2;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     float BulletSpreed = 3.f;
     
     virtual void StartFire() override;

@@ -13,22 +13,63 @@ void UWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    SpawnWeapon();
+    CurrentWeaponIndex = 0;
+    SpawnWeapons();
+    EquipWeapon(CurrentWeaponIndex);
 }
 
-void UWeaponComponent::SpawnWeapon()
+void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    if (!GetWorld()) return;
+    CurrentWeapon = nullptr;
+    for (auto Weapon : AvailableWeapons)
+    {
+        Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        Weapon->Destroy();
+    }
 
-    CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
-    if (!CurrentWeapon) return;
+    AvailableWeapons.Empty();
+    Super::EndPlay(EndPlayReason);
+}
 
+void UWeaponComponent::EquipWeapon(int32 Index)
+{
     ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (!Character) return;
 
-    FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, false);
-    CurrentWeapon->AttachToComponent(Character->GetMesh(), Rules, SocketName);
-    CurrentWeapon->SetOwner(GetOwner());
+    if (CurrentWeapon)
+    {
+        CurrentWeapon->StopFire();
+        AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), ArmorySocketName);
+    }
+
+    CurrentWeapon = AvailableWeapons[Index];
+    AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), EquipSocketName);
+    PlayAnimMontage(EquipAnimMontage);
+}
+
+void UWeaponComponent::SpawnWeapons()
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character || !GetWorld()) return;
+
+    for (auto WeaponClass : WeaponClasses)
+    {
+        auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+        if (!Weapon) continue;
+
+        Weapon->SetOwner(GetOwner());
+        AvailableWeapons.Add(Weapon);
+
+        AttachWeaponToSocket(Weapon, Character->GetMesh(), ArmorySocketName);
+    }
+}
+
+void UWeaponComponent::AttachWeaponToSocket(ABaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName)
+{
+    if (!Weapon || !SceneComponent) return;
+
+    const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+    Weapon->AttachToComponent(SceneComponent, AttachmentRules, SocketName);
 }
 
 void UWeaponComponent::StartFire()
@@ -41,4 +82,18 @@ void UWeaponComponent::StopFire()
 {
     if (!CurrentWeapon) return;
     CurrentWeapon->StopFire();
+}
+
+void UWeaponComponent::NextWeapon()
+{
+    CurrentWeaponIndex = (CurrentWeaponIndex + 1) % AvailableWeapons.Num();
+    EquipWeapon(CurrentWeaponIndex);
+}
+
+void UWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character || !GetWorld()) return;
+
+    Character->PlayAnimMontage(Animation);
 }

@@ -70,12 +70,10 @@ private:
     void MoveRight(float Value);
 
     void Sprint();
-    void Unsprint();
+    void UnSprint();
     void OnDeath();
     void OnHealthChanged(float NewHealth);
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
-
-    void SpawnWeapon();
 };

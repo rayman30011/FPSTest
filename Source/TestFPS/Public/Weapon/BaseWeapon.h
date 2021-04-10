@@ -28,7 +28,7 @@ protected:
     FName MuzzleSocketName = "MuzzleFlash";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	float TranceLenth = 1500;
+	float TranceLength = 1500;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     float Damage = 20;

@@ -55,7 +55,7 @@ bool ARifleWeapon::GetTraceData(FVector& Start, FVector& End) const
     Start = ViewLocation;
     const auto HalfRad = FMath::DegreesToRadians(BulletSpreed);
     const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfRad);
-    End = Start + ShootDirection * TranceLenth;
+    End = Start + ShootDirection * TranceLength;
 
     return true;
 }

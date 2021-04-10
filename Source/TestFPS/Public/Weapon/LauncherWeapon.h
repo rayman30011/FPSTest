@@ -6,12 +6,19 @@
 #include "Weapon/BaseWeapon.h"
 #include "LauncherWeapon.generated.h"
 
-/**
- * 
- */
+class AProjectile;
+
 UCLASS()
 class TESTFPS_API ALauncherWeapon : public ABaseWeapon
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+public:
+    virtual void StartFire() override;
+
+protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    TSubclassOf<AProjectile> ProjectileClass;
+
+    virtual void MakeShoot() override;
 };

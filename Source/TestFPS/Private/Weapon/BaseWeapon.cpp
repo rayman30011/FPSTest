@@ -59,7 +59,7 @@ bool ABaseWeapon::GetTraceData(FVector& Start, FVector& End) const
 
     Start = ViewLocation;
     const FVector ShootDirection = ViewRotation.Vector();
-    End = Start + ShootDirection * TranceLenth;
+    End = Start + ShootDirection * TranceLength;
 
     return true;
 }

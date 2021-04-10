@@ -70,9 +70,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::AddControllerYawInput);
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
     PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::Sprint);
-    PlayerInputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::Unsprint);
+    PlayerInputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::UnSprint);
     PlayerInputComponent->BindAction("Attack", IE_Pressed, WeaponComponent, &UWeaponComponent::StartFire);
     PlayerInputComponent->BindAction("Attack", IE_Released, WeaponComponent, &UWeaponComponent::StopFire);
+    PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &UWeaponComponent::NextWeapon);
 }
 
 bool APlayerCharacter::IsRunning() const
@@ -107,7 +108,7 @@ void APlayerCharacter::Sprint()
     WantsToRun = true;
 }
 
-void APlayerCharacter::Unsprint()
+void APlayerCharacter::UnSprint()
 {
     WantsToRun = false;
 }
@@ -128,6 +129,7 @@ void APlayerCharacter::OnDeath()
     
     const auto Capsule = GetCapsuleComponent();
     Capsule->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    WeaponComponent->StopFire();
 }
 
 void APlayerCharacter::OnHealthChanged(float NewHealth)
