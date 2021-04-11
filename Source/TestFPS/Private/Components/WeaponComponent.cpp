@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "Animations/EquipRifleAnimNotify.h"
 #include "Animations/ReloadFinishedAnimNotify.h"
+#include "Animations/Notify/WeaponSwitchedAnimNotify.h"
 #include "Weapon/AnimUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
@@ -47,22 +48,7 @@ void UWeaponComponent::EquipWeapon(int32 Index)
 
     ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (!Character) return;
-
-    if (CurrentWeapon)
-    {
-        CurrentWeapon->StopFire();
-        AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), ArmorySocketName);
-    }
-
-    CurrentWeapon = AvailableWeapons[Index];
-    const auto CurrentWeaponData = WeaponData.FindByPredicate([&](const FWeaponData& Data)
-    {
-        return Data.WeaponClass == CurrentWeapon->GetClass();
-    });
-
-    CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
     
-    AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), EquipSocketName);
     EquipAnimInProgress = true;
     PlayAnimMontage(EquipAnimMontage);
 }
@@ -141,6 +127,17 @@ void UWeaponComponent::InitAnimations()
         checkNoEntry();
     }
 
+    auto WeaponSwitchedNotify = AnimUtils::FindNotifyByClass<UWeaponSwitchedAnimNotify>(EquipAnimMontage);
+    if (WeaponSwitchedNotify)
+    {
+        WeaponSwitchedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnWeaponSwitched);
+    }
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("EquipFinishNotify not found"));
+        checkNoEntry();
+    }
+
     for (auto Data : WeaponData)
     {
         auto ReloadFinishNotify = AnimUtils::FindNotifyByClass<UReloadFinishedAnimNotify>(Data.ReloadAnimMontage);
@@ -170,6 +167,27 @@ void UWeaponComponent::OnReloadFinished(USkeletalMeshComponent* MeshComp)
 
     ReloadAnimInProgress = false;
     
+}
+
+void UWeaponComponent::OnWeaponSwitched(USkeletalMeshComponent* MeshComp)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character) return;
+    
+    if (CurrentWeapon)
+    {
+        CurrentWeapon->StopFire();
+        AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), ArmorySocketName);
+    }
+
+    CurrentWeapon = AvailableWeapons[CurrentWeaponIndex];
+    const auto CurrentWeaponData = WeaponData.FindByPredicate([&](const FWeaponData& Data)
+    {
+        return Data.WeaponClass == CurrentWeapon->GetClass();
+    });
+
+    CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
+    AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), EquipSocketName);
 }
 
 void UWeaponComponent::OnClipEmpty()

@@ -66,6 +66,7 @@ private:
 
     void OnEquipFinished(USkeletalMeshComponent* MeshComp);
     void OnReloadFinished(USkeletalMeshComponent* MeshComp);
+    void OnWeaponSwitched(USkeletalMeshComponent* MeshComp);
     void OnClipEmpty();
     void ChangeClip();
     
