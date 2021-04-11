@@ -17,6 +17,12 @@ class TESTFPS_API UHealthComponent : public UActorComponent
 public:
     UHealthComponent();
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float IsDead() const { return Health <= 0.f; }
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float GetHealthPercent() const { return Health / MaxHealth; }
+
 protected:
     virtual void BeginPlay() override;
 
@@ -39,9 +45,6 @@ public:
     float GetHealth() const { return Health; }
 
     UFUNCTION(BlueprintCallable)
-    float IsDead() const { return Health <= 0.f; }
-
-    UFUNCTION(BlueprintCallable)
     void SetHealth(float NewHealth);
 
     FOnDeath OnDeath;
@@ -53,7 +56,7 @@ private:
 
     UFUNCTION()
     void OnTakeDamage(
-    AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+        AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
     UFUNCTION()
     void OnHeal();
