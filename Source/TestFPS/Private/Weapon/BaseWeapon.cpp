@@ -19,6 +19,9 @@ void ABaseWeapon::BeginPlay()
     Super::BeginPlay();
     
     check(WeaponMesh);
+    checkf(DefaultAmmo.Bullets > 0, TEXT("Bullets count couldn't be less or equal 0"));
+    checkf(DefaultAmmo.Clips > 0, TEXT("Clips count couldn't be less or equal 0"));
+    
     CurrentAmmo = DefaultAmmo;
 }
 
@@ -71,11 +74,18 @@ FVector ABaseWeapon::GetMuzzleLocation() const
 
 void ABaseWeapon::DecreaseAmmo()
 {
+    if (IsClipEmpty())
+    {
+        UE_LOG(LogWeapon, Warning, TEXT("Clip is Empty"));
+        return;
+    }
+    
     CurrentAmmo.Bullets--;
     LogAmmo();
     if (IsClipEmpty() && !IsEmptyAmmo())
     {
-        ChangeClip();
+        StopFire();
+        OnClipEmpty.Broadcast();
     }
 }
 
@@ -92,9 +102,23 @@ bool ABaseWeapon::IsClipEmpty() const
 void ABaseWeapon::ChangeClip()
 {
     UE_LOG(LogWeapon, Display, TEXT("---- Change Clip ----"));
+
+    if (!CurrentAmmo.Infinite)
+    {
+        if (CurrentAmmo.Clips <= 0)
+        {
+            UE_LOG(LogWeapon, Warning, TEXT("No more clips"));
+            return;
+        }
+        CurrentAmmo.Clips--;
+    }
     
     CurrentAmmo.Bullets = DefaultAmmo.Bullets;
-    CurrentAmmo.Clips--;
+}
+
+bool ABaseWeapon::CanReload() const
+{
+    return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
 }
 
 void ABaseWeapon::LogAmmo()

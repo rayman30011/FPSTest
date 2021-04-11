@@ -7,13 +7,12 @@
 
 void ARifleWeapon::StartFire()
 {
-    MakeShoot();
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ARifleWeapon::MakeShoot, TimeBetweenShot, true);
+    MakeShoot();
 }
 
 void ARifleWeapon::StopFire()
 {
-    MakeShoot();
     GetWorldTimerManager().ClearTimer(ShotTimerHandle);
 }
 

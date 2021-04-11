@@ -4,25 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TestFPS/Public/CoreTypes.h"
+
 #include "BaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
 class APlayerController;
-
-USTRUCT(BlueprintType)
-struct FAmmoData
-{
-    GENERATED_BODY()
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    int32 Bullets;
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon", meta = (EditContition = "!Infinite"))
-    int32 Clips;
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    bool Infinite;
-};
 
 UCLASS()
 class TESTFPS_API ABaseWeapon : public AActor
@@ -34,6 +21,11 @@ public:
 
 	virtual void StartFire();
 	virtual void StopFire();
+    
+    void ChangeClip();
+    bool CanReload() const;
+
+    FOnClipEmptySignature OnClipEmpty;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -62,7 +54,6 @@ protected:
     void DecreaseAmmo();
     bool IsEmptyAmmo() const;
     bool IsClipEmpty() const;
-    void ChangeClip();
     void LogAmmo();
 private:
     FAmmoData CurrentAmmo;

@@ -61,13 +61,20 @@ private:
 
     int32 CurrentWeaponIndex = 0;
     bool EquipAnimInProgress = false;
+    bool ReloadAnimInProgress = false;
 
+
+    void OnEquipFinished(USkeletalMeshComponent* MeshComp);
+    void OnReloadFinished(USkeletalMeshComponent* MeshComp);
+    void OnClipEmpty();
+    void ChangeClip();
+    
     void EquipWeapon(int32 Index);
     void SpawnWeapons();
     void AttachWeaponToSocket(ABaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName);
     void PlayAnimMontage(UAnimMontage* Animation);
     void InitAnimations();
-    void OnEquipFinished(USkeletalMeshComponent* MeshComp);
     bool CanFire() const;
     bool CanEquip() const;
+    bool CanReload() const;
 };

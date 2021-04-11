@@ -4,6 +4,8 @@
 #include "Weapon/BaseWeapon.h"
 #include "GameFramework/Character.h"
 #include "Animations/EquipRifleAnimNotify.h"
+#include "Animations/ReloadFinishedAnimNotify.h"
+#include "Weapon/AnimUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -72,9 +74,10 @@ void UWeaponComponent::SpawnWeapons()
 
     for (auto Data : WeaponData)
     {
-        auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(Data.WeaponClass);
+        auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(Data.WeaponClass);        
         if (!Weapon) continue;
 
+        Weapon->OnClipEmpty.AddUObject(this, &UWeaponComponent::OnClipEmpty);
         Weapon->SetOwner(GetOwner());
         AvailableWeapons.Add(Weapon);
 
@@ -112,8 +115,7 @@ void UWeaponComponent::NextWeapon()
 
 void UWeaponComponent::Reload()
 {
-    UE_LOG(LogWeaponComponent, Display, TEXT("RELOAD"));
-    PlayAnimMontage(CurrentReloadAnimMontage);
+    ChangeClip();
 }
 
 void UWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
@@ -128,15 +130,29 @@ void UWeaponComponent::InitAnimations()
 {
     if (!EquipAnimMontage) return;
 
-    const auto NotifyEvents = EquipAnimMontage->Notifies;
-    for (auto NotifyEvent : NotifyEvents)
+    auto EquipFinishNotify = AnimUtils::FindNotifyByClass<UEquipRifleAnimNotify>(EquipAnimMontage);
+    if (EquipFinishNotify)
     {
-        auto EquipFinishNotify = Cast<UEquipRifleAnimNotify>(NotifyEvent.Notify);
-        if (!EquipFinishNotify) continue;
-
         EquipFinishNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
-        break;
     }
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("EquipFinishNotify not found"));
+        checkNoEntry();
+    }
+
+    for (auto Data : WeaponData)
+    {
+        auto ReloadFinishNotify = AnimUtils::FindNotifyByClass<UReloadFinishedAnimNotify>(Data.ReloadAnimMontage);
+        if (!ReloadFinishNotify)
+        {
+            UE_LOG(LogWeaponComponent, Error, TEXT("ReloadFinishNotify not found"));
+            checkNoEntry();
+        }
+        
+        ReloadFinishNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnReloadFinished);
+    }
+    
 }
 
 void UWeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComp)
@@ -147,12 +163,41 @@ void UWeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComp)
     EquipAnimInProgress = false;
 }
 
+void UWeaponComponent::OnReloadFinished(USkeletalMeshComponent* MeshComp)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character || Character->GetMesh() != MeshComp) return;
+
+    ReloadAnimInProgress = false;
+    
+}
+
+void UWeaponComponent::OnClipEmpty()
+{
+    ChangeClip();
+}
+
+void UWeaponComponent::ChangeClip()
+{
+    if (!CanReload()) return;
+    
+    CurrentWeapon->StopFire();
+    CurrentWeapon->ChangeClip();
+    ReloadAnimInProgress = true;
+    PlayAnimMontage(CurrentReloadAnimMontage);
+}
+
 bool UWeaponComponent::CanFire() const
 {
-    return CurrentWeapon && !EquipAnimInProgress;
+    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress;
 }
 
 bool UWeaponComponent::CanEquip() const
 {
     return !EquipAnimInProgress;
+}
+
+bool UWeaponComponent::CanReload() const
+{
+    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress && CurrentWeapon->CanReload();
 }
