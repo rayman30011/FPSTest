@@ -5,14 +5,11 @@
 
 #include "HealthComponent.h"
 #include "WeaponComponent.h"
+#include "TestFPS/Public/Utils.h"
 
 float UPlayerHUDUserWidget::GetHealthPercent() const
 {
-    const auto Player = GetOwningPlayerPawn();
-    if (!Player) return 0.f;
-
-    const auto Component = Player->GetComponentByClass(UHealthComponent::StaticClass());
-    const auto HealthComponent = Cast<UHealthComponent>(Component);
+    const auto HealthComponent = Utils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn());
     if (!HealthComponent) return 0.f;
 
     return HealthComponent->GetHealthPercent();
@@ -20,12 +17,28 @@ float UPlayerHUDUserWidget::GetHealthPercent() const
 
 bool UPlayerHUDUserWidget::GetWeaponUIData(FWeaponUIData& Data) const
 {
-    const auto Player = GetOwningPlayerPawn();
-    if (!Player) return false;
-
-    const auto Component = Player->GetComponentByClass(UWeaponComponent::StaticClass());
-    const auto WeaponComponent = Cast<UWeaponComponent>(Component);
+    const auto WeaponComponent = Utils::GetPlayerComponent<UWeaponComponent>(GetOwningPlayerPawn());
     if (!WeaponComponent) return false;
 
     return WeaponComponent->GetWeaponUIData(Data);
+}
+
+bool UPlayerHUDUserWidget::GetWeaponData(FAmmoData& Data) const
+{
+    const auto WeaponComponent = Utils::GetPlayerComponent<UWeaponComponent>(GetOwningPlayerPawn());
+    if (!WeaponComponent) return false;
+
+    return WeaponComponent->GetCurrentWeaponAmmo(Data);
+}
+
+bool UPlayerHUDUserWidget::IsPlayerAlive() const
+{
+    const auto HealthComponent = Utils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn());
+    return HealthComponent && !HealthComponent->IsDead();
+}
+
+bool UPlayerHUDUserWidget::IsPlayerSpectating() const
+{
+    const auto Controller = GetOwningPlayer();
+    return Controller && Controller->GetStateName() == NAME_Spectating;
 }
