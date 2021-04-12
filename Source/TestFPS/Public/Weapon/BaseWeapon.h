@@ -19,14 +19,15 @@ class TESTFPS_API ABaseWeapon : public AActor
 public:	
 	ABaseWeapon();
 
+    FOnClipEmptySignature OnClipEmpty;
+
 	virtual void StartFire();
 	virtual void StopFire();
     
     void ChangeClip();
     bool CanReload() const;
 
-    FOnClipEmptySignature OnClipEmpty;
-
+    FWeaponUIData GetUIData() const { return UIData; }
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent* WeaponMesh;
@@ -43,6 +44,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     FAmmoData DefaultAmmo = {15, 3, false};
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    FWeaponUIData UIData;
+    
 	virtual void BeginPlay() override;
 	virtual void MakeShoot();
     virtual bool GetTraceData(FVector &Start, FVector &End) const;
