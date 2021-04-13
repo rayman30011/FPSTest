@@ -120,6 +120,18 @@ bool UWeaponComponent::GetCurrentWeaponAmmo(FAmmoData& AmmoData) const
     return true;
 }
 
+bool UWeaponComponent::TryToAddClips(const TSubclassOf<ABaseWeapon> Class, int32 ClipsAmount)
+{
+    for (auto Weapon : AvailableWeapons)
+    {
+        if (Weapon && Weapon->IsA(Class))
+        {
+            return Weapon->TryToAddClips(ClipsAmount);
+        }
+    }
+    return false;
+}
+
 void UWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 {
     ACharacter* Character = Cast<ACharacter>(GetOwner());
@@ -206,9 +218,25 @@ void UWeaponComponent::OnWeaponSwitched(USkeletalMeshComponent* MeshComp)
     AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), EquipSocketName);
 }
 
-void UWeaponComponent::OnClipEmpty()
+void UWeaponComponent::OnClipEmpty(ABaseWeapon* Weapon)
 {
-    ChangeClip();
+    if (!Weapon) return;
+    
+    if (CurrentWeapon == Weapon)
+    {
+        ChangeClip();
+    }
+    else
+    {
+        for (auto AvailableWeapon : AvailableWeapons)
+        {
+            if (AvailableWeapon == Weapon)
+            {
+                AvailableWeapon->ChangeClip();
+                break;
+            }
+        }
+    }
 }
 
 void UWeaponComponent::ChangeClip()

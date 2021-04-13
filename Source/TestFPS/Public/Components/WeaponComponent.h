@@ -37,6 +37,7 @@ public:
 
     bool GetWeaponUIData(FWeaponUIData& Data) const;
     bool GetCurrentWeaponAmmo(FAmmoData& AmmoData) const;
+    bool TryToAddClips(const TSubclassOf<ABaseWeapon> Class, int32 ClipsAmount);
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -72,7 +73,7 @@ private:
     void OnEquipFinished(USkeletalMeshComponent* MeshComp);
     void OnReloadFinished(USkeletalMeshComponent* MeshComp);
     void OnWeaponSwitched(USkeletalMeshComponent* MeshComp);
-    void OnClipEmpty();
+    void OnClipEmpty(ABaseWeapon* Weapon);
     void ChangeClip();
     
     void EquipWeapon(int32 Index);
