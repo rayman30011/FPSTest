@@ -47,6 +47,8 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetHealth(float NewHealth);
 
+    bool TryAddHealth(float Amount);
+
     FOnDeath OnDeath;
     FOnHealthChanged OnHealthChanged;
 
