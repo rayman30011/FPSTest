@@ -4,6 +4,18 @@
 #include "Weapon/RifleWeapon.h"
 
 #include "DrawDebugHelpers.h"
+#include "Weapon/Components/WeaponFXComponent.h"
+
+ARifleWeapon::ARifleWeapon()
+{
+    WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
+}
+
+void ARifleWeapon::BeginPlay()
+{
+    Super::BeginPlay();
+    check(WeaponFXComponent);
+}
 
 void ARifleWeapon::StartFire()
 {
@@ -38,8 +50,9 @@ void ARifleWeapon::MakeShoot()
 
     if (HitResult.bBlockingHit)
     {
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 24, FColor::Red, false, 3.f);
-        DrawDebugLine(GetWorld(), GetMuzzleLocation() , HitResult.ImpactPoint, FColor::Red, false, 1.f, 0, 3.f);
+        //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 24, FColor::Red, false, 3.f);
+        //DrawDebugLine(GetWorld(), GetMuzzleLocation() , HitResult.ImpactPoint, FColor::Red, false, 1.f, 0, 3.f);
+        WeaponFXComponent->PlayImpactFX(HitResult);
 
         const auto DamagedActor = HitResult.Actor;
         if (DamagedActor.IsValid())
@@ -49,7 +62,7 @@ void ARifleWeapon::MakeShoot()
     }
     else
     {
-        DrawDebugLine(GetWorld(), GetMuzzleLocation() , TraceEnd, FColor::Red, false, 1.f, 0, 3.f);
+        //DrawDebugLine(GetWorld(), GetMuzzleLocation() , TraceEnd, FColor::Red, false, 1.f, 0, 3.f);
     }
 
     DecreaseAmmo();

@@ -8,6 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+class UWeaponFXComponent;
 class UProjectileMovementComponent;
 
 UCLASS()
@@ -26,6 +27,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Weapon")
     UProjectileMovementComponent* MovementComponent;
+
+    UPROPERTY(VisibleAnywhere, Category = "FX")
+    UWeaponFXComponent* WeaponFXComponent;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     float DamageRadius = 100.f;

@@ -3,6 +3,17 @@
 
 #include "Weapon/LauncherWeapon.h"
 #include "Weapon/Projectile.h"
+#include "Weapon/Components/WeaponFXComponent.h"
+
+ALauncherWeapon::ALauncherWeapon()
+{
+    WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
+}
+
+void ALauncherWeapon::BeginPlay()
+{
+    check(WeaponFXComponent);
+}
 
 void ALauncherWeapon::StartFire()
 {
