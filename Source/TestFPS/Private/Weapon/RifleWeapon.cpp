@@ -45,6 +45,7 @@ void ARifleWeapon::MakeShoot()
 
     FCollisionQueryParams Params;
     Params.AddIgnoredActor(GetOwner());
+    Params.bReturnPhysicalMaterial = true;
     FHitResult HitResult;
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, Params);
 
