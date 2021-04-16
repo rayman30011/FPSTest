@@ -12,6 +12,7 @@ ALauncherWeapon::ALauncherWeapon()
 
 void ALauncherWeapon::BeginPlay()
 {
+    Super::BeginPlay();
     check(WeaponFXComponent);
 }
 
