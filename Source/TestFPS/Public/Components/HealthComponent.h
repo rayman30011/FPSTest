@@ -42,6 +42,9 @@ public:
     UPROPERTY(EditAnywhere, Category = "Auto Heal", meta = (EditCondition = "EnableAutoHeal"))
     float HealthPerRate = 5.f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+    TSubclassOf<UCameraShakeBase> CameraShakeClass;
+
     float GetHealth() const { return Health; }
 
     UFUNCTION(BlueprintCallable)
@@ -62,4 +65,6 @@ private:
 
     UFUNCTION()
     void OnHeal();
+
+    void PlayShake();
 };

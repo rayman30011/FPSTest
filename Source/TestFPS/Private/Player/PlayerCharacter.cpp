@@ -131,6 +131,9 @@ void APlayerCharacter::OnDeath()
     const auto Capsule = GetCapsuleComponent();
     Capsule->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     WeaponComponent->StopFire();
+
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->SetSimulatePhysics(true);
 }
 
 void APlayerCharacter::OnHealthChanged(float NewHealth)

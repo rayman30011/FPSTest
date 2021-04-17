@@ -8,22 +8,30 @@
 
 #include "BaseWeapon.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShotSignature, const FAmmoData&, AmmoData);
+
 class USkeletalMeshComponent;
 class APlayerController;
 
 UCLASS()
 class TESTFPS_API ABaseWeapon : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	ABaseWeapon();
+    GENERATED_BODY()
+
+public:
+    ABaseWeapon();
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    float Recoil = 1.5f;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnShotSignature OnShot;
 
     FOnClipEmptySignature OnClipEmpty;
 
-	virtual void StartFire();
-	virtual void StopFire();
-    
+    virtual void StartFire();
+    virtual void StopFire();
+
     void ChangeClip();
     bool CanReload() const;
 
@@ -34,11 +42,11 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     FName MuzzleSocketName = "MuzzleFlash";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-	float TranceLength = 1500;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    float TranceLength = 1500;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     float Damage = 20;
@@ -48,11 +56,11 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     FWeaponUIData UIData;
-    
-	virtual void BeginPlay() override;
-	virtual void MakeShoot();
-    virtual bool GetTraceData(FVector &Start, FVector &End) const;
-    
+
+    virtual void BeginPlay() override;
+    virtual void MakeShoot();
+    virtual bool GetTraceData(FVector& Start, FVector& End) const;
+
     APlayerController* GetPlayerController() const;
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     FVector GetMuzzleLocation() const;
@@ -61,7 +69,7 @@ protected:
     bool IsEmptyAmmo() const;
     bool IsClipEmpty() const;
     bool IsAmmoFull() const;
-    
+
     void LogAmmo();
 private:
     FAmmoData CurrentAmmo;

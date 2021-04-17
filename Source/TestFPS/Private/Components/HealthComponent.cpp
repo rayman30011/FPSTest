@@ -2,8 +2,8 @@
 
 
 #include "Components/HealthComponent.h"
-#include <Engine\World.h>
-#include <TimerManager.h>
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 UHealthComponent::UHealthComponent()
 {
@@ -47,6 +47,8 @@ void UHealthComponent::OnTakeDamage(
     {
         GetWorld()->GetTimerManager().SetTimer(AutoHealTimer, this, &UHealthComponent::OnHeal, AutoHealUpdateRate, true, AutoHealDelay);
     }
+
+    PlayShake();
 }
 
 void UHealthComponent::OnHeal() 
@@ -57,6 +59,19 @@ void UHealthComponent::OnHeal()
     {
         GetWorld()->GetTimerManager().ClearTimer(AutoHealTimer);
     }
+}
+
+void UHealthComponent::PlayShake()
+{
+    if (IsDead()) return;
+
+    const auto Player = Cast<APawn>(GetOwner());
+    if (!Player) return;
+
+    const auto Controller = Player->GetController<APlayerController>();
+    if (!Controller || !Controller->PlayerCameraManager) return;
+
+    Controller->PlayerCameraManager->StartCameraShake(CameraShakeClass);
 }
 
 void UHealthComponent::SetHealth(float NewHealth)

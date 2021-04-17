@@ -46,4 +46,5 @@ void ALauncherWeapon::MakeShoot()
     }
 
     DecreaseAmmo();
+    OnShot.Broadcast(GetCurrentAmmo());
 }

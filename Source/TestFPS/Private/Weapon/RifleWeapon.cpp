@@ -51,8 +51,6 @@ void ARifleWeapon::MakeShoot()
 
     if (HitResult.bBlockingHit)
     {
-        //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 24, FColor::Red, false, 3.f);
-        //DrawDebugLine(GetWorld(), GetMuzzleLocation() , HitResult.ImpactPoint, FColor::Red, false, 1.f, 0, 3.f);
         WeaponFXComponent->PlayImpactFX(HitResult);
 
         const auto DamagedActor = HitResult.Actor;
@@ -61,12 +59,8 @@ void ARifleWeapon::MakeShoot()
             HitResult.Actor->TakeDamage(Damage, FDamageEvent{}, GetPlayerController(), this);
         }
     }
-    else
-    {
-        //DrawDebugLine(GetWorld(), GetMuzzleLocation() , TraceEnd, FColor::Red, false, 1.f, 0, 3.f);
-    }
-
     DecreaseAmmo();
+    OnShot.Broadcast(GetCurrentAmmo());
 }
 
 bool ARifleWeapon::GetTraceData(FVector& Start, FVector& End) const
