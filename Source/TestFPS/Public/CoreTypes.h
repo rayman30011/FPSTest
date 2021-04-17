@@ -3,6 +3,7 @@
 #include "CoreTypes.generated.h"
 
 class ABaseWeapon;
+class UNiagaraSystem;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, ABaseWeapon*)
 
@@ -31,4 +32,34 @@ struct FWeaponUIData
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     UTexture2D* CrossHeirIcon;
+};
+
+USTRUCT(BlueprintType)
+struct FDecalData
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    UMaterialInterface* Material;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    FVector Size = FVector(10.f);
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    float LifeTime = 5.f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    float FadeOutTime = 0.5f;
+};
+
+USTRUCT(BlueprintType)
+struct FImpactData
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    UNiagaraSystem* NiagaraEffect;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    FDecalData DecalData;
 };

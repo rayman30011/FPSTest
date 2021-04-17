@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "TestFPS/Public/CoreTypes.h"
+
 #include "WeaponFXComponent.generated.h"
 
 class UNiagaraSystem;
@@ -21,8 +23,8 @@ public:
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FX")
-    UNiagaraSystem* DefaultEffect;
+    FImpactData DefaultImpactData;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FX")
-    TMap<UPhysicalMaterial*, UNiagaraSystem*> EffectsMap;
+    TMap<UPhysicalMaterial*, FImpactData> ImpactDataMap;
 };
