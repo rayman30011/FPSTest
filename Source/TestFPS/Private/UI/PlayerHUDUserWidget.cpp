@@ -42,3 +42,22 @@ bool UPlayerHUDUserWidget::IsPlayerSpectating() const
     const auto Controller = GetOwningPlayer();
     return Controller && Controller->GetStateName() == NAME_Spectating;
 }
+
+bool UPlayerHUDUserWidget::Initialize()
+{
+    const auto HealthComponent = Utils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn());
+    if (HealthComponent)
+    {
+        HealthComponent->OnHealthChanged.AddUObject(this, &UPlayerHUDUserWidget::OnHealthChanged);
+    }
+
+    return Super::Initialize();
+}
+
+void UPlayerHUDUserWidget::OnHealthChanged(float Health, float Delta)
+{
+    if (Delta < 0)
+    {
+        OnTakeDamage();
+    }
+}

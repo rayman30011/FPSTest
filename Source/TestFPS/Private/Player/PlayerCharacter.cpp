@@ -46,7 +46,7 @@ void APlayerCharacter::BeginPlay()
     check(HealthTextRender);
     check(WeaponComponent);
 
-    OnHealthChanged(HealthComponent->GetHealth());
+    OnHealthChanged(HealthComponent->GetHealth(), 0.f);
     HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &APlayerCharacter::OnHealthChanged);
 
@@ -136,7 +136,7 @@ void APlayerCharacter::OnDeath()
     GetMesh()->SetSimulatePhysics(true);
 }
 
-void APlayerCharacter::OnHealthChanged(float NewHealth)
+void APlayerCharacter::OnHealthChanged(float NewHealth, float Delta)
 {
     HealthTextRender->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), NewHealth)));
 }

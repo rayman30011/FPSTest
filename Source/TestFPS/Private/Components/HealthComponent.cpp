@@ -76,8 +76,10 @@ void UHealthComponent::PlayShake()
 
 void UHealthComponent::SetHealth(float NewHealth)
 {
-    Health = FMath::Clamp(NewHealth, 0.f, MaxHealth);
-    OnHealthChanged.Broadcast(NewHealth);
+    const auto NextHealth = FMath::Clamp(NewHealth, 0.f, MaxHealth);
+    const auto HealthDelta = NewHealth - Health;
+    Health = NextHealth;
+    OnHealthChanged.Broadcast(Health, HealthDelta);
 }
 
 bool UHealthComponent::TryAddHealth(float AmountHealth)
