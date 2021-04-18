@@ -61,6 +61,7 @@ void ARifleWeapon::MakeShoot()
     }
     DecreaseAmmo();
     OnShot.Broadcast(GetCurrentAmmo());
+    WeaponMesh->PlayAnimation(FireAnimation, false);
 }
 
 bool ARifleWeapon::GetTraceData(FVector& Start, FVector& End) const

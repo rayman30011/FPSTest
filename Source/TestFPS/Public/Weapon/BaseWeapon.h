@@ -57,6 +57,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     FWeaponUIData UIData;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animations")
+    UAnimationAsset* FireAnimation;
+
     virtual void BeginPlay() override;
     virtual void MakeShoot();
     virtual bool GetTraceData(FVector& Start, FVector& End) const;
