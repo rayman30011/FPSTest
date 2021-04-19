@@ -5,6 +5,8 @@
 
 #include "DrawDebugHelpers.h"
 #include "Weapon/Components/WeaponFXComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 ARifleWeapon::ARifleWeapon()
 {
@@ -49,10 +51,12 @@ void ARifleWeapon::MakeShoot()
     FHitResult HitResult;
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, Params);
 
+    FVector TraceXFEnd = TraceEnd;
     if (HitResult.bBlockingHit)
     {
         WeaponFXComponent->PlayImpactFX(HitResult);
-
+        TraceXFEnd = HitResult.ImpactPoint;
+        
         const auto DamagedActor = HitResult.Actor;
         if (DamagedActor.IsValid())
         {
@@ -62,6 +66,16 @@ void ARifleWeapon::MakeShoot()
     DecreaseAmmo();
     OnShot.Broadcast(GetCurrentAmmo());
     WeaponMesh->PlayAnimation(FireAnimation, false);
+    SpawnTraceFX(GetMuzzleLocation(), TraceXFEnd);
+}
+
+void ARifleWeapon::SpawnTraceFX(const FVector& Start, const FVector& End)
+{
+    UNiagaraComponent* TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, Start);
+    if (TraceFXComponent)
+    {
+        TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, End);
+    }
 }
 
 bool ARifleWeapon::GetTraceData(FVector& Start, FVector& End) const

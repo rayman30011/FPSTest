@@ -8,6 +8,8 @@
 #include "RifleWeapon.generated.h"
 
 class UWeaponFXComponent;
+class UNiagaraSystem;
+
 UCLASS()
 class TESTFPS_API ARifleWeapon : public ABaseWeapon
 {
@@ -25,6 +27,12 @@ public:
     UPROPERTY(VisibleAnywhere, Category = "FX")
     UWeaponFXComponent* WeaponFXComponent;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FX")
+    UNiagaraSystem* TraceFX;
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FX")
+    FString TraceTargetName = "TraceTarget";
+
     virtual void BeginPlay() override;
     virtual void StartFire() override;
     virtual void StopFire() override;
@@ -35,4 +43,6 @@ protected:
 
 private:
     FTimerHandle ShotTimerHandle;
+
+    void SpawnTraceFX(const FVector& Start, const FVector& End);
 };
