@@ -6,6 +6,7 @@
 
 #include "CharacterAIPerceptionComponent.h"
 #include "AI/AIPlayerCharacter.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 ACharacterAIController::ACharacterAIController()
 {
@@ -28,6 +29,12 @@ void ACharacterAIController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    const auto AimActor = CustomPerceptionComponent->GetClosesEnemy();
+    const auto AimActor = GetFocusOnActor();
     SetFocus(AimActor);
+}
+
+AActor* ACharacterAIController::GetFocusOnActor() const
+{
+    if (!GetBlackboardComponent()) return nullptr;
+    return Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(FocusOnKeyName));
 }
