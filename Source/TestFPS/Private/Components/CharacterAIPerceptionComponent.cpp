@@ -25,7 +25,7 @@ AActor* UCharacterAIPerceptionComponent::GetClosesEnemy() const
     for (auto PerceivedActor : PerceivedActors)
     {
         const auto HealthComponent = Utils::GetPlayerComponent<UHealthComponent>(PerceivedActor);
-        if (HealthComponent || !HealthComponent->IsDead())
+        if (HealthComponent && !HealthComponent->IsDead())
         {
             const auto Distance = FVector::Distance(PerceivedActor->GetActorLocation(), Pawn->GetActorLocation());
             if (Distance < BestDistance)

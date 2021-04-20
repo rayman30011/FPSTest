@@ -3,10 +3,13 @@
 
 #include "AI/AIPlayerCharacter.h"
 
+
+#include "AIWeaponComponent.h"
 #include "AI/CharacterAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-AAIPlayerCharacter::AAIPlayerCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+AAIPlayerCharacter::AAIPlayerCharacter(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer.SetDefaultSubobjectClass<UAIWeaponComponent>("WeaponComponent"))
 {
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = ACharacterAIController::StaticClass();

@@ -30,9 +30,9 @@ class TESTFPS_API UWeaponComponent : public UActorComponent
 public:	
     UWeaponComponent();
 
-    void StartFire();
+    virtual void StartFire();
     void StopFire();
-    void NextWeapon();
+    virtual void NextWeapon();
     void Reload();
 
     bool GetWeaponUIData(FWeaponUIData& Data) const;
@@ -54,21 +54,24 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Animations")
     UAnimMontage* EquipAnimMontage;
-
-	virtual void BeginPlay() override;
-    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-private:
+    
     UPROPERTY()
     ABaseWeapon* CurrentWeapon = nullptr;
 
     UPROPERTY()
     TArray<ABaseWeapon*> AvailableWeapons;
 
+	virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+    bool CanFire() const;
+    bool CanEquip() const;
+    void EquipWeapon(int32 Index);
+    
     int32 CurrentWeaponIndex = 0;
+private:
     bool EquipAnimInProgress = false;
     bool ReloadAnimInProgress = false;
-
 
     void OnEquipFinished(USkeletalMeshComponent* MeshComp);
     void OnReloadFinished(USkeletalMeshComponent* MeshComp);
@@ -76,12 +79,9 @@ private:
     void OnClipEmpty(ABaseWeapon* Weapon);
     void ChangeClip();
     
-    void EquipWeapon(int32 Index);
     void SpawnWeapons();
     void AttachWeaponToSocket(ABaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName);
     void PlayAnimMontage(UAnimMontage* Animation);
     void InitAnimations();
-    bool CanFire() const;
-    bool CanEquip() const;
     bool CanReload() const;
 };
