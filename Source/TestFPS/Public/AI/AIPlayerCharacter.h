@@ -6,6 +6,8 @@
 #include "Player/PlayerCharacter.h"
 #include "AIPlayerCharacter.generated.h"
 
+class UBehaviorTree;
+
 UCLASS()
 class TESTFPS_API AAIPlayerCharacter : public APlayerCharacter
 {
@@ -13,4 +15,7 @@ class TESTFPS_API AAIPlayerCharacter : public APlayerCharacter
     
 public:
     AAIPlayerCharacter(const FObjectInitializer& ObjectInitializer);
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
+    UBehaviorTree* BehaviorTree;
 };

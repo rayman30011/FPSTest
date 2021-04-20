@@ -6,12 +6,19 @@
 #include "AIController.h"
 #include "CharacterAIController.generated.h"
 
-/**
- * 
- */
+class UCharacterAIPerceptionComponent;
+
 UCLASS()
 class TESTFPS_API ACharacterAIController : public AAIController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+public:
+    ACharacterAIController();
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UCharacterAIPerceptionComponent* CustomPerceptionComponent;
+
+    virtual void OnPossess(APawn* InPawn) override;
+    virtual void Tick(float DeltaSeconds) override;
 };
