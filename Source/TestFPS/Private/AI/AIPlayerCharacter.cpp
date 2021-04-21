@@ -5,6 +5,7 @@
 
 
 #include "AIWeaponComponent.h"
+#include "BrainComponent.h"
 #include "AI/CharacterAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -18,5 +19,15 @@ AAIPlayerCharacter::AAIPlayerCharacter(const FObjectInitializer& ObjectInitializ
     {
         GetCharacterMovement()->bUseControllerDesiredRotation = true;
         GetCharacterMovement()->RotationRate = FRotator(0.f, 360.f, 0.f);
+    }
+}
+
+void AAIPlayerCharacter::OnDeath()
+{
+    Super::OnDeath();
+    const auto MyController = Cast<ACharacterAIController>(Controller);
+    if (MyController && MyController->BrainComponent)
+    {
+        MyController->BrainComponent->Cleanup();
     }
 }

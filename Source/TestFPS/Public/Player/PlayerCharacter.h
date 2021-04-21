@@ -48,6 +48,8 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Movement")
     FVector2D LandedDamage = FVector2D(10.f, 100.f);
+    
+    virtual void OnDeath();
 
 public:
     // Called every frame
@@ -71,7 +73,6 @@ private:
 
     void Sprint();
     void UnSprint();
-    void OnDeath();
     void OnHealthChanged(float NewHealth, float Delta);
 
     UFUNCTION()
