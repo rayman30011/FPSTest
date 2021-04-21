@@ -5,7 +5,6 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
 #include "CharacterAIPerceptionComponent.h"
-#include "NavigationSystem.h"
 #include "TestFPS/Public/Utils.h"
 
 UFindEnemyService::UFindEnemyService()

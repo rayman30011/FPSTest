@@ -256,7 +256,7 @@ bool UWeaponComponent::CanFire() const
 
 bool UWeaponComponent::CanEquip() const
 {
-    return !EquipAnimInProgress;
+    return !EquipAnimInProgress && !ReloadAnimInProgress;
 }
 
 bool UWeaponComponent::CanReload() const
