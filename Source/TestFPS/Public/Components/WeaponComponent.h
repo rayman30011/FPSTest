@@ -39,6 +39,8 @@ public:
     bool GetCurrentWeaponAmmo(FAmmoData& AmmoData) const;
     bool TryToAddClips(const TSubclassOf<ABaseWeapon> Class, int32 ClipsAmount);
 
+    ABaseWeapon* GetWeaponByClass(TSubclassOf<ABaseWeapon> Class) const;
+
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;

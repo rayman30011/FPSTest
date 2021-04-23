@@ -6,9 +6,7 @@
 #include "BehaviorTree/BTDecorator.h"
 #include "HealthPercentDecorator.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class TESTFPS_API UHealthPercentDecorator : public UBTDecorator
 {

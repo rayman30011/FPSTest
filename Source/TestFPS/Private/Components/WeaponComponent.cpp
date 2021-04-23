@@ -132,6 +132,19 @@ bool UWeaponComponent::TryToAddClips(const TSubclassOf<ABaseWeapon> Class, int32
     return false;
 }
 
+ABaseWeapon* UWeaponComponent::GetWeaponByClass(TSubclassOf<ABaseWeapon> Class) const
+{
+    for (auto Weapon : AvailableWeapons)
+    {
+        if (Weapon->GetClass() == Class)
+        {
+            return Weapon;
+        }
+    }
+
+    return nullptr;
+}
+
 void UWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 {
     ACharacter* Character = Cast<ACharacter>(GetOwner());
