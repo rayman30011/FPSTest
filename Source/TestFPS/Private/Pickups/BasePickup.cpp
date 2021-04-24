@@ -44,12 +44,16 @@ void ABasePickup::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
+bool ABasePickup::BeTaken() const
+{
+    return !GetWorldTimerManager().IsTimerActive(RespawnTimerHandle);
+}
+
 void ABasePickup::PickupWasTaken()
 {
     CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
     GetRootComponent()->SetVisibility(false, true);
 
-    FTimerHandle RespawnTimerHandle;
     GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &ABasePickup::Respawn, RespawnTime);
 }
 

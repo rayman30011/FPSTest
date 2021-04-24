@@ -32,8 +32,11 @@ protected:
 
 public:
     virtual void Tick(float DeltaTime) override;
+    bool BeTaken() const;
 
 private:
+    FTimerHandle RespawnTimerHandle;
+    
     void PickupWasTaken();
     void Respawn();
 };
