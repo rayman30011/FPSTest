@@ -46,5 +46,6 @@ void ALauncherWeapon::MakeShoot()
     }
 
     DecreaseAmmo();
+    WeaponMesh->PlayAnimation(FireAnimation, false);
     OnShot.Broadcast(GetCurrentAmmo());
 }
