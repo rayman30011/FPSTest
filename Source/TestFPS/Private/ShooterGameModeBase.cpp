@@ -8,6 +8,8 @@
 #include "Player/PlayerCharacter.h"
 #include "UI/GameHUD.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogShooterGameMode, All, All);
+
 AShooterGameModeBase::AShooterGameModeBase()
 {
     DefaultPawnClass = APlayerCharacter::StaticClass();
@@ -20,6 +22,9 @@ void AShooterGameModeBase::StartPlay()
     Super::StartPlay();
 
     SpawnBots();
+    
+    CurrentRound = 1;
+    StartRound();
 }
 
 UClass* AShooterGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -43,4 +48,48 @@ void AShooterGameModeBase::SpawnBots()
         const auto Controller = GetWorld()->SpawnActor<AAIController>(AIControllerClass, Parameters);
         RestartPlayer(Controller);
     }
+}
+
+void AShooterGameModeBase::StartRound()
+{
+    RoundCountDown = GameData.RoundTime;
+    GetWorldTimerManager().SetTimer(GameRoundTimerHandle, this, &AShooterGameModeBase::GameTimerUpdate, 1.0f, true);
+}
+
+void AShooterGameModeBase::GameTimerUpdate()
+{
+    UE_LOG(LogShooterGameMode, Display, TEXT("Time: %i / Round %i/%i"), RoundCountDown, CurrentRound, GameData.RoundsCount);
+    if (--RoundCountDown == 0)
+    {
+        GetWorldTimerManager().ClearTimer(GameRoundTimerHandle);
+        if (CurrentRound + 1 <= GameData.RoundsCount)
+        {
+            ++CurrentRound;
+            ResetPlayers();
+            StartRound();
+        }
+        else
+        {
+            UE_LOG(LogShooterGameMode, Warning, TEXT("Game Over"));
+        }
+    }
+}
+
+void AShooterGameModeBase::ResetPlayers()
+{
+    if (!GetWorld()) return;
+
+    for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        ResetOnePlayer(It->Get());
+    }
+}
+
+void AShooterGameModeBase::ResetOnePlayer(AController* Controller)
+{
+    if (Controller && Controller->GetPawn())
+    {
+        Controller->GetPawn()->Reset();
+    }
+    RestartPlayer(Controller);
 }

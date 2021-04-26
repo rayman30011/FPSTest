@@ -116,13 +116,10 @@ bool ABaseWeapon::IsAmmoFull() const
 
 void ABaseWeapon::ChangeClip()
 {
-    UE_LOG(LogWeapon, Display, TEXT("---- Change Clip ----"));
-
     if (!CurrentAmmo.Infinite)
     {
         if (CurrentAmmo.Clips <= 0)
         {
-            UE_LOG(LogWeapon, Warning, TEXT("No more clips"));
             return;
         }
         CurrentAmmo.Clips--;

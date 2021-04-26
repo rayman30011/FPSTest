@@ -12,6 +12,8 @@ ACharacterAIController::ACharacterAIController()
 {
     CustomPerceptionComponent = CreateDefaultSubobject<UCharacterAIPerceptionComponent>("CustomPerceptionComponent");
     SetPerceptionComponent(*CustomPerceptionComponent);
+
+    bWantsPlayerState = true;
 }
 
 void ACharacterAIController::OnPossess(APawn* InPawn)

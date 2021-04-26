@@ -32,5 +32,14 @@ protected:
     FGameData GameData;
 
 private:
+    int32 CurrentRound;
+    int32 RoundCountDown;
+    FTimerHandle GameRoundTimerHandle;
+
     void SpawnBots();
+    void StartRound();
+    void GameTimerUpdate();
+
+    void ResetPlayers();
+    void ResetOnePlayer(AController* Controller);
 };

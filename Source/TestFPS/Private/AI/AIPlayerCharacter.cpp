@@ -12,7 +12,7 @@
 AAIPlayerCharacter::AAIPlayerCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer.SetDefaultSubobjectClass<UAIWeaponComponent>("WeaponComponent"))
 {
-    AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+    AutoPossessAI = EAutoPossessAI::Disabled;
     AIControllerClass = ACharacterAIController::StaticClass();
     bUseControllerRotationYaw = false;
     if (GetCharacterMovement())
