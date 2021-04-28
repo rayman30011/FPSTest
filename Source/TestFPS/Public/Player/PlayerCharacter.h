@@ -48,6 +48,9 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Movement")
     FVector2D LandedDamage = FVector2D(10.f, 100.f);
+
+    UPROPERTY(EditDefaultsOnly, Category = "Material")
+    FName MaterialColorName = "BodyColor";
     
     virtual void OnDeath();
 
@@ -63,6 +66,8 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMovementDirection() const;
+
+    void SetPlayerColor(const FLinearColor& Color);
 
 private:
     bool WantsToRun = false;

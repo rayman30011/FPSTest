@@ -42,4 +42,8 @@ private:
 
     void ResetPlayers();
     void ResetOnePlayer(AController* Controller);
+
+    void CreateTeamsInfo();
+    FLinearColor GetColorByTeamID(int32 ID);
+    void SetPlayerColor(const AController* Controller);
 };

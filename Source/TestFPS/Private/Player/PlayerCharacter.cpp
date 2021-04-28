@@ -93,6 +93,14 @@ float APlayerCharacter::GetMovementDirection() const
     return FMath::RadiansToDegrees(AngleBeetween) * FMath::Sign(Cross.Z);
 }
 
+void APlayerCharacter::SetPlayerColor(const FLinearColor& Color)
+{
+    const auto Material = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+    if (!Material) return;
+
+    Material->SetVectorParameterValue(MaterialColorName, Color);
+}
+
 void APlayerCharacter::MoveForward(float Value)
 {
     IsRunForward = Value > 0.f;

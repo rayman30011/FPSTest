@@ -5,6 +5,8 @@
 
 
 #include "AIController.h"
+#include "AI/AIPlayerCharacter.h"
+#include "Player/CharacterPlayerState.h"
 #include "Player/PlayerCharacter.h"
 #include "UI/GameHUD.h"
 
@@ -15,6 +17,7 @@ AShooterGameModeBase::AShooterGameModeBase()
     DefaultPawnClass = APlayerCharacter::StaticClass();
     PlayerControllerClass = APlayerController::StaticClass();
     HUDClass = AGameHUD::StaticClass();
+    PlayerStateClass = ACharacterPlayerState::StaticClass();
 }
 
 void AShooterGameModeBase::StartPlay()
@@ -22,7 +25,7 @@ void AShooterGameModeBase::StartPlay()
     Super::StartPlay();
 
     SpawnBots();
-    
+    CreateTeamsInfo();
     CurrentRound = 1;
     StartRound();
 }
@@ -92,4 +95,49 @@ void AShooterGameModeBase::ResetOnePlayer(AController* Controller)
         Controller->GetPawn()->Reset();
     }
     RestartPlayer(Controller);
+    SetPlayerColor(Controller);
+}
+
+void AShooterGameModeBase::CreateTeamsInfo()
+{
+    if (!GetWorld()) return;
+
+    int32 TeamID = 1;
+    for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        const auto Controller = It->Get();
+        if (!Controller) continue;
+
+        const auto PlayerState = Cast<ACharacterPlayerState>(Controller->PlayerState);
+        if (!PlayerState) continue;
+
+        PlayerState->SetTeamID(TeamID);
+        PlayerState->SetTeamColor(GetColorByTeamID(TeamID));
+        SetPlayerColor(Controller);
+        TeamID = TeamID == 1 ? 2 : 1;
+    }
+}
+
+FLinearColor AShooterGameModeBase::GetColorByTeamID(int32 ID)
+{
+    if (ID - 1 < GameData.TeamColors.Num())
+    {
+        return GameData.TeamColors[ID - 1];
+    }
+
+    UE_LOG(LogShooterGameMode, Warning, TEXT("No color for TeamID %i"), ID);
+    return GameData.DefaultColor;
+}
+
+void AShooterGameModeBase::SetPlayerColor(const AController* Controller)
+{
+    if (!Controller) return;
+    
+    const auto Character = Cast<APlayerCharacter>(Controller->GetPawn());
+    if (!Character) return;
+
+    const auto PlayerState = Cast<ACharacterPlayerState>(Controller->PlayerState);
+    if (!PlayerState) return;
+
+    Character->SetPlayerColor(PlayerState->GetTeamColor());
 }
