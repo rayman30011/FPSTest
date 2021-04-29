@@ -23,6 +23,13 @@ public:
     virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
     void Killed(AController* Killer, AController* Victim);
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
+    int32 GetRoundCountDown() const { return RoundCountDown; }
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
+    int32 GetCurrentRound() const { return CurrentRound; }
+    
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     TSubclassOf<AAIController> AIControllerClass;
