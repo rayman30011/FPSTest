@@ -6,12 +6,16 @@
 #include "GameFramework/PlayerController.h"
 #include "BasePlayerController.generated.h"
 
-/**
- * 
- */
+class URespawnComponent;
+
 UCLASS()
 class TESTFPS_API ABasePlayerController : public APlayerController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+public:
+    ABasePlayerController();
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    URespawnComponent* RespawnComponent;
 };

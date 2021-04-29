@@ -19,6 +19,8 @@ public:
     void SetTeamColor(const FLinearColor& Color) { TeamColor = Color; }
 
     void AddKill() { ++KillsCount; }
+
+    UFUNCTION(BlueprintCallable, Category = "Stats")
     int32 GetKillsCount() const { return KillsCount; }
 
     void AddDeath() { ++DeathCount; }

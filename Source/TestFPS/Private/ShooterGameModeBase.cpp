@@ -5,8 +5,10 @@
 
 
 #include "AIController.h"
+#include "RespawnComponent.h"
 #include "Player/CharacterPlayerState.h"
 #include "Player/PlayerCharacter.h"
+#include "TestFPS/Public/Utils.h"
 #include "UI/GameHUD.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogShooterGameMode, All, All);
@@ -54,7 +56,13 @@ void AShooterGameModeBase::Killed(AController* Killer, AController* Victim)
         VictimState->AddDeath();
     }
 
+    StartRespawn(Victim);
     LogPlayerInfo();
+}
+
+void AShooterGameModeBase::RespawnRequest(AController* Controller)
+{
+    ResetOnePlayer(Controller);
 }
 
 void AShooterGameModeBase::SpawnBots()
@@ -174,4 +182,12 @@ void AShooterGameModeBase::LogPlayerInfo()
 
         PlayerState->LogInfo();
     }
+}
+
+void AShooterGameModeBase::StartRespawn(AController* Controller)
+{
+    const auto RespawnComponent = Utils::GetPlayerComponent<URespawnComponent>(Controller);
+    if (!RespawnComponent) return;
+
+    RespawnComponent->Respawn(GameData.RespawnTime);
 }

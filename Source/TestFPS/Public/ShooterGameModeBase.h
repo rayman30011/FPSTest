@@ -29,7 +29,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Game")
     int32 GetCurrentRound() const { return CurrentRound; }
-    
+
+    void RespawnRequest(AController* Controller);
+
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     TSubclassOf<AAIController> AIControllerClass;
@@ -57,4 +59,6 @@ private:
     void SetPlayerColor(const AController* Controller);
 
     void LogPlayerInfo();
+
+    void StartRespawn(AController* Controller);
 };

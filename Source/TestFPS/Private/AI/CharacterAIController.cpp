@@ -5,12 +5,14 @@
 
 
 #include "CharacterAIPerceptionComponent.h"
+#include "RespawnComponent.h"
 #include "AI/AIPlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 ACharacterAIController::ACharacterAIController()
 {
     CustomPerceptionComponent = CreateDefaultSubobject<UCharacterAIPerceptionComponent>("CustomPerceptionComponent");
+    RespawnComponent = CreateDefaultSubobject<URespawnComponent>("RespawnComponent");
     SetPerceptionComponent(*CustomPerceptionComponent);
 
     bWantsPlayerState = true;

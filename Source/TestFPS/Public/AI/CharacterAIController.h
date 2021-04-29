@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+
 #include "CharacterAIController.generated.h"
 
+class URespawnComponent;
 class UCharacterAIPerceptionComponent;
 
 UCLASS()
@@ -18,6 +20,9 @@ public:
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCharacterAIPerceptionComponent* CustomPerceptionComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    URespawnComponent* RespawnComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
     FName FocusOnKeyName = "EnemyActor";
