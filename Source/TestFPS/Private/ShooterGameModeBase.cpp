@@ -40,6 +40,24 @@ UClass* AShooterGameModeBase::GetDefaultPawnClassForController_Implementation(AC
     return Super::GetDefaultPawnClassForController_Implementation(InController);
 }
 
+void AShooterGameModeBase::Killed(AController* Killer, AController* Victim)
+{
+    const auto KillerState = Killer ? Killer->GetPlayerState<ACharacterPlayerState>() : nullptr;
+    const auto VictimState = Victim ? Victim->GetPlayerState<ACharacterPlayerState>() : nullptr;
+
+    if (KillerState)
+    {
+        KillerState->AddKill();
+    }
+
+    if (VictimState)
+    {
+        VictimState->AddDeath();
+    }
+
+    LogPlayerInfo();
+}
+
 void AShooterGameModeBase::SpawnBots()
 {
     if (!GetWorld()) return;
@@ -140,4 +158,21 @@ void AShooterGameModeBase::SetPlayerColor(const AController* Controller)
     if (!PlayerState) return;
 
     Character->SetPlayerColor(PlayerState->GetTeamColor());
+}
+
+void AShooterGameModeBase::LogPlayerInfo()
+{
+    if (!GetWorld()) return;
+
+    int32 TeamID = 1;
+    for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        const auto Controller = It->Get();
+        if (!Controller) continue;
+
+        const auto PlayerState = Controller->GetPlayerState<ACharacterPlayerState>();
+        if (!PlayerState) continue;
+
+        PlayerState->LogInfo();
+    }
 }

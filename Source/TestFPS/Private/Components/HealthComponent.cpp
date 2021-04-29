@@ -2,6 +2,8 @@
 
 
 #include "Components/HealthComponent.h"
+
+#include "ShooterGameModeBase.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 
@@ -41,6 +43,7 @@ void UHealthComponent::OnTakeDamage(
 
     if (IsDead())
     {
+        Killed(InstigatedBy);
         OnDeath.Broadcast();
     }
     else if (EnableAutoHeal)
@@ -72,6 +75,20 @@ void UHealthComponent::PlayShake()
     if (!Controller || !Controller->PlayerCameraManager) return;
 
     Controller->PlayerCameraManager->StartCameraShake(CameraShakeClass);
+}
+
+void UHealthComponent::Killed(AController* Killer)
+{
+    if (!GetWorld()) return;
+    
+    const auto GameMode = Cast<AShooterGameModeBase>(GetWorld()->GetAuthGameMode());
+    if (!GameMode) return;
+
+    const auto Player = Cast<APawn>(GetOwner());
+    const auto VictimController = Player ? Player->Controller : nullptr;
+    if (!VictimController) return;
+
+    GameMode->Killed(Killer, VictimController);
 }
 
 void UHealthComponent::SetHealth(float NewHealth)

@@ -45,4 +45,5 @@ private:
     FTimerHandle ShotTimerHandle;
 
     void SpawnTraceFX(const FVector& Start, const FVector& End);
+    AController* GetController() const;
 };

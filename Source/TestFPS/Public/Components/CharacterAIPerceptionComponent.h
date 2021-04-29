@@ -6,9 +6,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "CharacterAIPerceptionComponent.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class TESTFPS_API UCharacterAIPerceptionComponent : public UAIPerceptionComponent
 {

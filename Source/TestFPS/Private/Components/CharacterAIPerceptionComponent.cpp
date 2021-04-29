@@ -26,7 +26,7 @@ AActor* UCharacterAIPerceptionComponent::GetClosesEnemy() const
     {
         const auto HealthComponent = Utils::GetPlayerComponent<UHealthComponent>(PerceivedActor);
         const auto PerceivedPawn = Cast<APawn>(PerceivedActor);
-        const auto AreEnemies = !PerceivedPawn && Utils::AreEnemies(Controller, PerceivedPawn->GetController());
+        const auto AreEnemies = PerceivedPawn && Utils::AreEnemies(Controller, PerceivedPawn->GetController());
         
         if (HealthComponent && !HealthComponent->IsDead() && AreEnemies)
         {

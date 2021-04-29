@@ -67,4 +67,5 @@ private:
     void OnHeal();
 
     void PlayShake();
+    void Killed(AController* Killer);
 };
