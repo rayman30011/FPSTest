@@ -16,6 +16,12 @@ public:
 
     void Respawn(int32 RespawnTime);
 
+    UFUNCTION(BlueprintCallable, Category = "Respawn")
+    int32 GetRespawnCountDown() const { return RespawnCountDown; }
+
+    UFUNCTION(BlueprintCallable, Category = "Respawn")
+    bool IsRespawnInProgress() const;
+
 private:
     FTimerHandle RespawnTimerHandle;
     int32 RespawnCountDown = 0;
