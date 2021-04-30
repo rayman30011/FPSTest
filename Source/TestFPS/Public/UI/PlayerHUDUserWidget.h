@@ -7,9 +7,7 @@
 #include "TestFPS/Public/CoreTypes.h"
 
 #include "PlayerHUDUserWidget.generated.h"
-/**
- * 
- */
+
 UCLASS()
 class TESTFPS_API UPlayerHUDUserWidget : public UUserWidget
 {
@@ -38,4 +36,5 @@ public:
 
 private:
     void OnHealthChanged(float Health, float Delta);
+    void OnNewPawn(APawn* Pawn);
 };

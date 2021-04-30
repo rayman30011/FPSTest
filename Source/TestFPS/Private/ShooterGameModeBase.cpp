@@ -10,6 +10,7 @@
 #include "Player/PlayerCharacter.h"
 #include "TestFPS/Public/Utils.h"
 #include "UI/GameHUD.h"
+#include "EngineUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogShooterGameMode, All, All);
 
@@ -98,7 +99,7 @@ void AShooterGameModeBase::GameTimerUpdate()
         }
         else
         {
-            UE_LOG(LogShooterGameMode, Warning, TEXT("Game Over"));
+            GameOver();
         }
     }
 }
@@ -190,4 +191,16 @@ void AShooterGameModeBase::StartRespawn(AController* Controller)
     if (!RespawnComponent) return;
 
     RespawnComponent->Respawn(GameData.RespawnTime);
+}
+
+void AShooterGameModeBase::GameOver()
+{
+    for (auto Pawn: TActorRange<APawn>(GetWorld()))
+    {
+        if (Pawn)
+        {
+            Pawn->TurnOff();
+            Pawn->DisableInput(nullptr);
+        }
+    }
 }
