@@ -19,6 +19,8 @@ class TESTFPS_API AShooterGameModeBase : public AGameModeBase
 public:
     AShooterGameModeBase();
 
+    FOnMatchStateChangedSignature OnMatchStateChanged;
+
     virtual void StartPlay() override;
     virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
@@ -43,6 +45,7 @@ protected:
     FGameData GameData;
 
 private:
+    EMatchState MatchState = EMatchState::WaitingToStart;
     int32 CurrentRound;
     int32 RoundCountDown;
     FTimerHandle GameRoundTimerHandle;
@@ -63,4 +66,6 @@ private:
     void StartRespawn(AController* Controller);
 
     void GameOver();
+
+    void SetMatchState(EMatchState NewState);
 };

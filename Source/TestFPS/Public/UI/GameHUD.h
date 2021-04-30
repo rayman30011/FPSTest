@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "TestFPS/Public/CoreTypes.h"
+
 #include "GameHUD.generated.h"
 
 /**
@@ -23,4 +25,5 @@ protected:
     virtual void BeginPlay() override;
 private:
     void DrawCrossHair();
+    void OnMatchStateChanged(EMatchState State);
 };

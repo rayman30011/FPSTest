@@ -30,6 +30,8 @@ void AShooterGameModeBase::StartPlay()
     CreateTeamsInfo();
     CurrentRound = 1;
     StartRound();
+
+    SetMatchState(EMatchState::InProgress);
 }
 
 UClass* AShooterGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -203,4 +205,14 @@ void AShooterGameModeBase::GameOver()
             Pawn->DisableInput(nullptr);
         }
     }
+
+    SetMatchState(EMatchState::GameOver);
+}
+
+void AShooterGameModeBase::SetMatchState(EMatchState NewState)
+{
+    if (NewState == MatchState) return;
+
+    MatchState = NewState;
+    OnMatchStateChanged.Broadcast(MatchState);
 }
