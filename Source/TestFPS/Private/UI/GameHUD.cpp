@@ -19,10 +19,16 @@ void AGameHUD::BeginPlay()
 
     check(GetWorld());
     
-    const auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
-    if (PlayerHUDWidget)
+    Widgets.Add(EMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
+    Widgets.Add(EMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PausedWidgetClass));
+
+    for (auto WidgetPair: Widgets)
     {
-        PlayerHUDWidget->AddToViewport();
+        const auto Widget = WidgetPair.Value;
+        if (!Widget) continue;
+
+        Widget->AddToViewport();
+        Widget->SetVisibility(ESlateVisibility::Hidden);
     }
 
     const auto GameMode = Cast<AShooterGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -46,4 +52,14 @@ void AGameHUD::DrawCrossHair()
 
 void AGameHUD::OnMatchStateChanged(EMatchState State)
 {
+    if (CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+    
+    CurrentWidget = Widgets.Contains(State) ? Widgets[State] : nullptr;
+    if (CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+    }
 }

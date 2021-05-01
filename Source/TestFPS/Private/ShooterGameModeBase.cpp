@@ -68,6 +68,28 @@ void AShooterGameModeBase::RespawnRequest(AController* Controller)
     ResetOnePlayer(Controller);
 }
 
+bool AShooterGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+    const auto Paused = Super::SetPause(PC, CanUnpauseDelegate);
+
+    if (Paused)
+    {
+        SetMatchState(EMatchState::Pause);
+    }
+
+    return Paused;
+}
+
+bool AShooterGameModeBase::ClearPause()
+{
+    const auto PauseCleared = Super::ClearPause();
+    if (PauseCleared)
+    {
+        SetMatchState(EMatchState::InProgress);
+    }
+    return PauseCleared;
+}
+
 void AShooterGameModeBase::SpawnBots()
 {
     if (!GetWorld()) return;
