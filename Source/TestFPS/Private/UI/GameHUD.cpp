@@ -21,6 +21,7 @@ void AGameHUD::BeginPlay()
     
     Widgets.Add(EMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
     Widgets.Add(EMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PausedWidgetClass));
+    Widgets.Add(EMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
 
     for (auto WidgetPair: Widgets)
     {
