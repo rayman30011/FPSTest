@@ -5,15 +5,14 @@
 
 #include "GameFramework/GameModeBase.h"
 
-bool UPauseWidget::Initialize()
+void UPauseWidget::NativeOnInitialized()
 {
-    const auto InitStatus = Super::Initialize();
+    Super::NativeOnInitialized();
+    
     if (ClearPauseButton)
     {
         ClearPauseButton->OnClicked.AddDynamic(this, &UPauseWidget::OnClearPause);
     }
-
-    return InitStatus;
 }
 
 void UPauseWidget::OnClearPause()

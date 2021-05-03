@@ -14,10 +14,9 @@ class TESTFPS_API UPauseWidget : public UUserWidget
 {
     GENERATED_BODY()
 
-public:
-    virtual bool Initialize() override;
-
 protected:
+    virtual void NativeOnInitialized() override;
+    
     UPROPERTY(meta = (BindWidget))
     UButton* ClearPauseButton;
 
