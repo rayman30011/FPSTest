@@ -3,8 +3,12 @@
 
 #include "Menu/UI/MenuWidget.h"
 
+
+#include "ShooterGameInstance.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogMenu, All, All);
 
 void UMenuWidget::NativeOnInitialized()
 {
@@ -18,6 +22,16 @@ void UMenuWidget::NativeOnInitialized()
 
 void UMenuWidget::OnStartGame()
 {
-    const FName LevelName = "M_Default";
-    UGameplayStatics::OpenLevel(this, LevelName);
+    if (!GetWorld()) return;
+
+    const auto GameInstance = GetWorld()->GetGameInstance<UShooterGameInstance>();
+    if (!GameInstance) return;
+
+    if (GameInstance->GetStartupLevelName().IsNone())
+    {
+        UE_LOG(LogMenu, Warning, TEXT("Level name is NONE"));
+        return;
+    }
+
+    UGameplayStatics::OpenLevel(this, GameInstance->GetStartupLevelName());
 }
