@@ -18,9 +18,15 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UButton* StartButton;
 
+    UPROPERTY(meta = (BindWidget))
+    UButton* ExitButton;
+
     virtual void NativeOnInitialized() override;
 
 private:
     UFUNCTION()
     void OnStartGame();
+    
+    UFUNCTION()
+    void OnExitGame();
 };

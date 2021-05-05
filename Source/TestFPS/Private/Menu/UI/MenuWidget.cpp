@@ -18,6 +18,11 @@ void UMenuWidget::NativeOnInitialized()
     {
         StartButton->OnClicked.AddDynamic(this, &UMenuWidget::OnStartGame);
     }
+
+    if (ExitButton)
+    {
+        ExitButton->OnClicked.AddDynamic(this, &UMenuWidget::OnExitGame);
+    }
 }
 
 void UMenuWidget::OnStartGame()
@@ -34,4 +39,9 @@ void UMenuWidget::OnStartGame()
     }
 
     UGameplayStatics::OpenLevel(this, GameInstance->GetStartupLevelName());
+}
+
+void UMenuWidget::OnExitGame()
+{
+    UKismetSystemLibrary::QuitGame(this, GetOwningPlayer(), EQuitPreference::Quit, true);
 }
