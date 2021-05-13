@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UHealthComponent;
 class UTextRenderComponent;
 class UWeaponComponent;
+class UWidgetComponent;
 
 UCLASS()
 class TESTFPS_API APlayerCharacter : public ACharacter
@@ -35,10 +36,10 @@ protected:
     UHealthComponent* HealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent* HealthTextRender;
+    UWeaponComponent* WeaponComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UWeaponComponent* WeaponComponent;
+    UWidgetComponent* HealthWidgetComponent;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animations")
     UAnimMontage* DeathAnimation;

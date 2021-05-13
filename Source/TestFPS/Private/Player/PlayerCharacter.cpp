@@ -10,6 +10,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UI/HealthBarWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(CharacterLog, All, All);
 
@@ -32,8 +34,9 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjInit)
     HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
     WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
 
-    HealthTextRender = CreateDefaultSubobject<UTextRenderComponent>("HealthTextRender");
-    HealthTextRender->SetupAttachment(GetRootComponent());
+    HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthWidgetComponent");
+    HealthWidgetComponent->SetupAttachment(GetRootComponent());
+    HealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 }
 
 // Called when the game starts or when spawned
@@ -43,8 +46,8 @@ void APlayerCharacter::BeginPlay()
 
     check(HealthComponent);
     check(GetCharacterMovement());
-    check(HealthTextRender);
     check(WeaponComponent);
+    check(HealthWidgetComponent);
 
     OnHealthChanged(HealthComponent->GetHealth(), 0.f);
     HealthComponent->OnDeath.AddUObject(this, &APlayerCharacter::OnDeath);
@@ -146,7 +149,10 @@ void APlayerCharacter::OnDeath()
 
 void APlayerCharacter::OnHealthChanged(float NewHealth, float Delta)
 {
-    HealthTextRender->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), NewHealth)));
+    const auto Widget = Cast<UHealthBarWidget>(HealthWidgetComponent->GetUserWidgetObject());
+    if (!Widget) return;
+
+    Widget->SetHealthPercent(HealthComponent->GetHealthPercent());
 }
 
 
