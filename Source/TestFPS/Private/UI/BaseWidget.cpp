@@ -3,3 +3,7 @@
 
 #include "UI/BaseWidget.h"
 
+void UBaseWidget::Show()
+{
+    PlayAnimation(ShowAnimation);
+}

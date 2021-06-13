@@ -4,12 +4,14 @@
 #include "Menu/UI/MenuHUD.h"
 
 #include "Blueprint/UserWidget.h"
+#include "UI/BaseWidget.h"
 
 void AMenuHUD::BeginPlay()
 {
-    const auto Widget = CreateWidget<UUserWidget>(GetWorld(), MenuWidgetClass);
+    const auto Widget = CreateWidget<UBaseWidget>(GetWorld(), MenuWidgetClass);
     if (Widget)
     {
         Widget->AddToViewport();
+        Widget->Show();
     }
 }

@@ -6,12 +6,15 @@
 #include "Blueprint/UserWidget.h"
 #include "BaseWidget.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class TESTFPS_API UBaseWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+    void Show();
+    
+protected:
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* ShowAnimation;
 };

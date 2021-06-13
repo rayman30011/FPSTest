@@ -6,6 +6,7 @@
 
 #include "ShooterGameModeBase.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/BaseWidget.h"
 
 void AGameHUD::DrawHUD()
 {
@@ -20,8 +21,8 @@ void AGameHUD::BeginPlay()
     check(GetWorld());
     
     Widgets.Add(EMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
-    Widgets.Add(EMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PausedWidgetClass));
-    Widgets.Add(EMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+    Widgets.Add(EMatchState::Pause, CreateWidget<UBaseWidget>(GetWorld(), PausedWidgetClass));
+    Widgets.Add(EMatchState::GameOver, CreateWidget<UBaseWidget>(GetWorld(), GameOverWidgetClass));
 
     for (auto WidgetPair: Widgets)
     {
@@ -62,5 +63,7 @@ void AGameHUD::OnMatchStateChanged(EMatchState State)
     if (CurrentWidget)
     {
         CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+        const auto BaseWidget = Cast<UBaseWidget>(CurrentWidget);
+        if (BaseWidget) BaseWidget->Show();
     }
 }

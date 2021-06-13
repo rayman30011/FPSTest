@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "TestFPS/Public/CoreTypes.h"
+#include "UI/BaseWidget.h"
+
 
 
 #include "MenuWidget.generated.h"
@@ -15,7 +17,7 @@ class UShooterGameInstance;
 class ULevelItemWidget;
 
 UCLASS()
-class TESTFPS_API UMenuWidget : public UUserWidget
+class TESTFPS_API UMenuWidget : public UBaseWidget
 {
     GENERATED_BODY()
 

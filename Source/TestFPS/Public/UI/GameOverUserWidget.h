@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "BaseWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "TestFPS/Public/CoreTypes.h"
 
@@ -13,7 +15,7 @@ class UButton;
 class UVerticalBox;
 
 UCLASS()
-class TESTFPS_API UGameOverUserWidget : public UUserWidget
+class TESTFPS_API UGameOverUserWidget : public UBaseWidget
 {
     GENERATED_BODY()
 

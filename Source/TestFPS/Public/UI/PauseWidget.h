@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "BaseWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 
@@ -10,7 +12,7 @@
 
 
 UCLASS()
-class TESTFPS_API UPauseWidget : public UUserWidget
+class TESTFPS_API UPauseWidget : public UBaseWidget
 {
     GENERATED_BODY()
 
